@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from './config/config.service';
 import { ConfigModule } from './config/config.module';
+import { SpotOrderModule } from './spot-order/spot-order.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ConfigModule } from './config/config.module';
         configService.getMongoConfig(),
     }),
     ConfigModule,
+    SpotOrderModule,
   ],
   providers: [ConfigService],
 })
