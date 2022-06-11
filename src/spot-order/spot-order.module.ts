@@ -7,7 +7,15 @@ import { SpotOrder, SpotOrderSchema } from './schema/spot-order.schema';
 @Module({
   providers: [SpotOrderService],
   controllers: [SpotOrderController],
-  exports: [SpotOrderService],
+  exports: [
+    SpotOrderService,
+    MongooseModule.forFeature([
+      {
+        name: SpotOrder.name,
+        schema: SpotOrderSchema,
+      },
+    ]),
+  ],
   imports: [
     MongooseModule.forFeature([
       {

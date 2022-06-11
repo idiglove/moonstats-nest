@@ -1,16 +1,29 @@
-import { SpotOrder } from './../spot-order/schema/spot-order.schema';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import {
+  SpotOrder,
+  SpotOrderDocument,
+} from './../spot-order/schema/spot-order.schema';
 
+@Injectable()
 export class UserPnlService {
-  spotOrders: SpotOrder[];
+  constructor(
+    @InjectModel(SpotOrder.name)
+    private readonly spotOrderModel: Model<SpotOrderDocument>,
+  ) {}
 
-  constructor(spotOrders: SpotOrder[]) {
-    this.spotOrders = spotOrders;
-  }
-
-  computeTotalPnl(userId: string) {
+  async computeTotalPnl(userId: string) {
+    // return {
+    //   test: 1212,
+    // };
+    // console.log('userId', { userId });
+    const spotOrders = await this.spotOrderModel.find({ userId }).exec();
     return {
-      test: 12321,
+      test: spotOrders,
     };
+    //todo: compute pnl and userId should be the id, check that
+
     // const totalPnl = this.spotOrders?.reduce((acc: number, curr: SpotOrder) => {
     //   const currTotal = curr?.totalAmount ?? 0;
     //   if (curr?.type === 'BUY') {
