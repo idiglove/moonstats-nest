@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from './config/config.service';
 import { ConfigModule } from './config/config.module';
 import { SpotOrderModule } from './spot-order/spot-order.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SpotOrderModule } from './spot-order/spot-order.module';
     }),
     ConfigModule,
     SpotOrderModule,
+    UserModule,
   ],
   providers: [ConfigService],
 })
