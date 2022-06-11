@@ -20,7 +20,7 @@ export class SpotOrderController {
     return await this.spotOrderService.findAll();
   }
 
-  @Get(':id') // spot-order/628a1d220d6613d63b8b024f
+  @Get('id/:id') // spot-order/628a1d220d6613d63b8b024f
   async find(@Param('id') id: string) {
     return await this.spotOrderService.findOne(id);
   }
