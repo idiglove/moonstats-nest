@@ -14,35 +14,31 @@ export class UserPnlService {
   ) {}
 
   async computeTotalPnl(userId: string) {
-    const spotOrders = await this.spotOrderModel.find({ userId }).exec();
-
-    const totalPnl = spotOrders?.reduce(
-      (acc: any, curr: SpotOrder) => {
-        const currTotal = curr?.totalAmount ?? 0;
-        const buy = acc?.buy ?? 0;
-        const sell = acc?.sell ?? 0;
-        if (curr?.type === 'BUY') {
-          return {
-            ...acc,
-            buy: buy + currTotal,
-          };
-        } else {
-          return {
-            ...acc,
-            sell: sell + currTotal,
-          };
-        }
+    const totalBuyAndSell = await this.spotOrderModel.aggregate([
+      {
+        $match: {
+          userId,
+        },
       },
       {
-        buy: 0,
-        sell: 0,
+        $group: {
+          _id: '$type',
+          sum: {
+            $sum: '$totalAmount',
+          },
+        },
       },
-    );
+    ]);
 
-    totalPnl['total'] = totalPnl.sell - totalPnl.buy;
+    const buyTotal =
+      totalBuyAndSell?.filter((total) => total?._id === 'BUY')?.[0]?.sum ?? 0;
+    const sellTotal =
+      totalBuyAndSell?.filter((total) => total?._id === 'SELL')?.[0]?.sum ?? 0;
+    const totalPnl = sellTotal - buyTotal;
 
     return {
       totalPnl,
+      totalBuyAndSell,
     };
   }
 }
