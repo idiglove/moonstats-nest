@@ -25,13 +25,10 @@ export class SpotOrderController {
     return await this.spotOrderService.findOne(id);
   }
 
-  // @Get('user/:userId/path/:path')
-  // async findByUserIdAndPath(
-  //   @Param('userId') userId: string,
-  //   @Param('path') path: string,
-  // ) {
-  //   return await this.spotOrderService.findAllByUser(userId, path);
-  // }
+  @Get('user/:userId')
+  async findByUserId(@Param('userId') userId: string) {
+    return await this.spotOrderService.findAllByUser(userId);
+  }
 
   @Post()
   async create(@Body() createSpotOrderDto: CreateSpotOrderDto) {

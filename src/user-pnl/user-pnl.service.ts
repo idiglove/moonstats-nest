@@ -16,15 +16,30 @@ export class UserPnlService {
   async computeTotalPnl(userId: string) {
     const spotOrders = await this.spotOrderModel.find({ userId }).exec();
 
-    const totalPnl = spotOrders?.reduce((acc: number, curr: SpotOrder) => {
-      const currTotal = curr?.totalAmount ?? 0;
-      console.log('curr', { curr, acc });
-      if (curr?.type === 'BUY') {
-        return acc + currTotal;
-      } else {
-        return currTotal - acc;
-      }
-    }, 0);
+    const totalPnl = spotOrders?.reduce(
+      (acc: any, curr: SpotOrder) => {
+        const currTotal = curr?.totalAmount ?? 0;
+        const buy = acc?.buy ?? 0;
+        const sell = acc?.sell ?? 0;
+        if (curr?.type === 'BUY') {
+          return {
+            ...acc,
+            buy: buy + currTotal,
+          };
+        } else {
+          return {
+            ...acc,
+            sell: sell + currTotal,
+          };
+        }
+      },
+      {
+        buy: 0,
+        sell: 0,
+      },
+    );
+
+    totalPnl['total'] = totalPnl.sell - totalPnl.buy;
 
     return {
       totalPnl,
