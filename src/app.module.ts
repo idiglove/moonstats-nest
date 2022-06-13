@@ -6,6 +6,7 @@ import { SpotOrderModule } from './spot-order/spot-order.module';
 import { UserModule } from './user/user.module';
 import { UserPnlService } from './user-pnl/user-pnl.service';
 import { UserPnlModule } from './user-pnl/user-pnl.module';
+import { CoinGeckoModule } from './coin-gecko/coin-gecko.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UserPnlModule } from './user-pnl/user-pnl.module';
     SpotOrderModule,
     UserModule,
     UserPnlModule,
+    CoinGeckoModule,
   ],
   providers: [ConfigService, UserPnlService],
 })
