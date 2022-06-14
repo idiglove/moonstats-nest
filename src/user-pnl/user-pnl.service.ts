@@ -30,6 +30,22 @@ export class UserPnlService {
       },
     ]);
 
+    const buyAndSellQuantity = await this.spotOrderModel.aggregate([
+      {
+        $group: {
+          _id: {
+            type: '$type',
+            pair: '$symbolPair',
+          },
+          quantity: {
+            $sum: '$quantity',
+          },
+        },
+      },
+    ]);
+
+    console.log({ buyAndSellQuantity });
+
     const buyTotal =
       totalBuyAndSell?.filter((total) => total?._id === 'BUY')?.[0]?.sum ?? 0;
     const sellTotal =

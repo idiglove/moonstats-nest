@@ -28,8 +28,13 @@ export class CoinGeckoService {
   //   };
   // }
 
+  // id here is ObjectId
   async findOne(id: string): Promise<Coin> {
     return await this.model.findById(id).exec();
+  }
+
+  async findById(id: string): Promise<Coin> {
+    return await this.model.findOne({ id }).exec();
   }
 
   async getAndSaveList(): Promise<IResponse | BadRequestException> {
@@ -38,7 +43,7 @@ export class CoinGeckoService {
         'https://api.coingecko.com/api/v3/coins/list?include_platform=false',
       );
       const coins = await coinsRes.json();
-      // console.log('coinse', { coins });
+
       await this.model.insertMany(coins);
 
       return {
@@ -53,6 +58,14 @@ export class CoinGeckoService {
     }
   }
 
+  async updateByCoinId(
+    coinId: string,
+    updateLevelDto: UpdateCoinDto,
+  ): Promise<any> {
+    return await this.model.find({ id: coinId }).update(updateLevelDto).exec();
+  }
+
+  // id is ObjectId
   async update(id: string, updateLevelDto: UpdateCoinDto): Promise<Coin> {
     return await this.model.findByIdAndUpdate(id, updateLevelDto).exec();
   }

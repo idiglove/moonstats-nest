@@ -7,6 +7,7 @@ import { Coin, CoinSchema } from './schema/coin.schema';
 @Module({
   controllers: [CoinGeckoController],
   providers: [CoinGeckoService],
+  exports: [CoinGeckoService],
   imports: [
     MongooseModule.forFeature([
       {

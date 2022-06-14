@@ -6,13 +6,16 @@ export type CoinDocument = Coin & Document;
 @Schema()
 export class Coin {
   @Prop({ required: true })
-  id: string;
+  id: string; //coinId in SpotOrder
 
   @Prop()
   symbol: string;
 
   @Prop()
   name: string;
+
+  @Prop()
+  marketPrice: number;
 
   @Prop()
   createdAt: Date;

@@ -1,16 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import fetch from 'cross-fetch';
 
 import { CreateSpotOrderDto } from './dto/create-spot-order.dto';
 import { UpdateSpotOrderDto } from './dto/update-spot-order.dto';
+import { CoinGeckoService } from './../coin-gecko/coin-gecko.service';
 import { SpotOrder, SpotOrderDocument } from './schema/spot-order.schema';
+import { MarketPrice } from 'src/types';
 
 @Injectable()
 export class SpotOrderService {
   constructor(
     @InjectModel(SpotOrder.name)
     private readonly model: Model<SpotOrderDocument>,
+    private readonly coinGeckoService: CoinGeckoService,
   ) {}
 
   async findAll(): Promise<SpotOrder[]> {
@@ -26,16 +30,37 @@ export class SpotOrderService {
     return await this.model.findById(id).exec();
   }
 
-  async create(
-    createSpotOrderDto: CreateSpotOrderDto,
-  ): Promise<SpotOrder | BadRequestException> {
+  async create(createSpotOrderDto: CreateSpotOrderDto): Promise<any> {
     try {
+      const id = createSpotOrderDto.coinId;
+      const existingCoin = await this.coinGeckoService.findById(id);
+      let marketPrice: MarketPrice;
+
+      if (
+        existingCoin.marketPrice === null ||
+        existingCoin.marketPrice === undefined
+      ) {
+        // if marketPrice hasnt been saved for this coin, save the price
+        const marketPriceRes = await fetch(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd`,
+        );
+        marketPrice = await marketPriceRes.json();
+
+        await this.coinGeckoService.updateByCoinId(id, {
+          id,
+          marketPrice: marketPrice[id]?.usd
+            ? parseInt(marketPrice[id]?.usd)
+            : 0,
+          updatedAt: new Date(),
+        });
+      }
+
       const spotOrder = await new this.model({
         ...createSpotOrderDto,
         createdAt: new Date(),
       }).save();
 
-      return spotOrder;
+      return { spotOrder, marketPrice };
     } catch (e: any) {
       throw new BadRequestException({
         success: false,

@@ -12,6 +12,9 @@ export class SpotOrder {
   symbolPair: string;
 
   @Prop({ required: true })
+  coinId: string; // id in Coin
+
+  @Prop({ required: true })
   type: string;
 
   @Prop({ required: true })

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SpotOrderService } from './spot-order.service';
 import { SpotOrderController } from './spot-order.controller';
+import { CoinGeckoModule } from './../coin-gecko/coin-gecko.module';
 import { SpotOrder, SpotOrderSchema } from './schema/spot-order.schema';
 
 @Module({
@@ -17,6 +18,7 @@ import { SpotOrder, SpotOrderSchema } from './schema/spot-order.schema';
     ]),
   ],
   imports: [
+    CoinGeckoModule,
     MongooseModule.forFeature([
       {
         name: SpotOrder.name,
