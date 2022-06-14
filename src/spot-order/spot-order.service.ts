@@ -57,6 +57,8 @@ export class SpotOrderService {
 
       const spotOrder = await new this.model({
         ...createSpotOrderDto,
+        totalAmount:
+          createSpotOrderDto.pricePerCoin * createSpotOrderDto.quantity,
         createdAt: new Date(),
       }).save();
 
