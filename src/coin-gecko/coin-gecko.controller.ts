@@ -20,6 +20,11 @@ export class CoinGeckoController {
     return await this.coinGeckoService.findAll();
   }
 
+  @Get('/symbol/:symbol')
+  async findBySymbol(@Param('symbol') symbol: string) {
+    return await this.coinGeckoService.findBySymbol(symbol);
+  }
+
   @Get('id/:id') // user/628a1d220d6613d63b8b024f
   async find(@Param('id') id: string) {
     return await this.coinGeckoService.findOne(id);

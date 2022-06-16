@@ -33,6 +33,11 @@ export class CoinGeckoService {
     return await this.model.findById(id).exec();
   }
 
+  async findBySymbol(symbol: string): Promise<Coin[]> {
+    const regex = new RegExp('^' + symbol);
+    return await this.model.find({ symbol: regex }).exec();
+  }
+
   async findById(id: string): Promise<Coin> {
     return await this.model.findOne({ id }).exec();
   }
