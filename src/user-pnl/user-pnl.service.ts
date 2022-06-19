@@ -14,21 +14,62 @@ export class UserPnlService {
   ) {}
 
   async computeTotalPnl(userId: string) {
-    const totalBuyAndSell = await this.spotOrderModel.aggregate([
+    // const totalBuyAndSell = await this.spotOrderModel.aggregate([
+    //   {
+    //     $match: {
+    //       userId,
+    //     },
+    //   },
+    //   {
+    //     $group: {
+    //       _id: '$type',
+    //       sum: {
+    //         $sum: '$totalAmount',
+    //       },
+    //     },
+    //   },
+    // ]);
+    const ordersPerCoin = await this.spotOrderModel.aggregate([
       {
-        $match: {
-          userId,
+        $sort: {
+          createdAt: 1, // asc
         },
       },
       {
         $group: {
-          _id: '$type',
-          sum: {
-            $sum: '$totalAmount',
+          _id: '$symbolPair',
+          items: {
+            $push: '$$ROOT',
           },
         },
       },
     ]);
+
+    const coinPnl = ordersPerCoin?.map((order) => {
+      let unrealizedPnl = 0;
+      let realizedPnl = 0;
+      let unrealizedQuantity = 0;
+      order?.items?.forEach((item) => {
+        if (item?.type === 'BUY') {
+          unrealizedPnl += item?.totalAmount ?? 0;
+          unrealizedQuantity += item?.quantity ?? 0;
+        } else {
+          realizedPnl += item?.totalAmount - unrealizedPnl;
+          unrealizedQuantity -= item?.quantity;
+
+          if (realizedPnl > 0) {
+            unrealizedPnl = 0;
+          }
+        }
+      });
+
+      return {
+        id: order?._id,
+        unrealizedPnl,
+        realizedPnl,
+        unrealizedQuantity,
+      };
+    });
 
     const buyAndSellQuantity = await this.spotOrderModel.aggregate([
       {
@@ -44,17 +85,18 @@ export class UserPnlService {
       },
     ]);
 
-    console.log({ buyAndSellQuantity });
+    console.log({ ordersPerCoin, coinPnl: JSON.stringify(coinPnl) });
 
-    const buyTotal =
-      totalBuyAndSell?.filter((total) => total?._id === 'BUY')?.[0]?.sum ?? 0;
-    const sellTotal =
-      totalBuyAndSell?.filter((total) => total?._id === 'SELL')?.[0]?.sum ?? 0;
-    const totalPnl = sellTotal - buyTotal;
+    // const buyTotal =
+    //   totalBuyAndSell?.filter((total) => total?._id === 'BUY')?.[0]?.sum ?? 0;
+    // const sellTotal =
+    //   totalBuyAndSell?.filter((total) => total?._id === 'SELL')?.[0]?.sum ?? 0;
+    // const totalPnl = sellTotal - buyTotal;
 
     return {
-      totalPnl,
-      totalBuyAndSell,
+      test: '12',
+      // totalPnl,
+      // totalBuyAndSell,
     };
   }
 }
