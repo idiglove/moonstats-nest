@@ -8,3 +8,10 @@ export type MarketPrice = {
     usd: string;
   };
 };
+
+export type PnlItem = {
+  id: string;
+  unrealizedPnl: number;
+  realizedPnl: number;
+  unrealizedQuantity: number;
+};

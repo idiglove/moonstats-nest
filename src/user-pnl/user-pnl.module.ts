@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CoinGeckoModule } from 'src/coin-gecko/coin-gecko.module';
 import {
   SpotOrder,
   SpotOrderSchema,
@@ -10,6 +11,7 @@ import { UserPnlService } from './user-pnl.service';
   providers: [UserPnlService],
   exports: [UserPnlService],
   imports: [
+    CoinGeckoModule,
     MongooseModule.forFeature([
       {
         name: SpotOrder.name,
