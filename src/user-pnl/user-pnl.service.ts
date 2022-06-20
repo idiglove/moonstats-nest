@@ -31,11 +31,11 @@ export class UserPnlService {
           unrealizedQuantity -= item?.quantity;
 
           if (realizedPnl > 0) {
-            unrealizedPnl = 0;
+            unrealizedPnl = 0; // no more unrealized pnl
           }
 
           if (realizedPnl < 0) {
-            realizedPnl = 0;
+            realizedPnl = 0; // no realized pnl as of now
           }
         }
       });
@@ -72,49 +72,39 @@ export class UserPnlService {
     ]);
 
     const coinPnl = this.computePnl(ordersPerCoin);
+    let totalRealizedPnl = 0;
+    let totalUnrealizedPnl = 0;
+    let totalUnrealizedQuantity = 0;
+    const mostHoldings = {
+      symbol: '',
+      quantity: 0,
+    };
 
-    const coinsWithPrice = await Promise.all(
+    const totalPnl = await Promise.all(
       coinPnl?.map(async (coin: PnlItem) => {
         const existingCoin = await this.coinGeckoService.findById(coin?.id);
-        console.log({ coin, existingCoin });
+        const unrealizedPnl =
+          coin.unrealizedQuantity * existingCoin?.marketPrice;
+        totalRealizedPnl += coin?.realizedPnl;
+        totalUnrealizedPnl += unrealizedPnl;
+        totalUnrealizedQuantity += coin?.unrealizedQuantity;
+        if (coin?.unrealizedQuantity > mostHoldings?.quantity) {
+          mostHoldings.quantity = coin?.unrealizedQuantity;
+          mostHoldings.symbol = coin?.id;
+        }
         return {
           ...coin,
-          unrealizedPnl: coin.unrealizedQuantity * existingCoin?.marketPrice,
+          unrealizedPnl,
         };
       }),
     );
 
-    // const buyAndSellQuantity = await this.spotOrderModel.aggregate([
-    //   {
-    //     $group: {
-    //       _id: {
-    //         type: '$type',
-    //         pair: '$symbolPair',
-    //       },
-    //       quantity: {
-    //         $sum: '$quantity',
-    //       },
-    //     },
-    //   },
-    // ]);
-
-    // console.log({
-    //   ordersPerCoin,
-    //   coinPnl: JSON.stringify(coinPnl),
-    //   coinWithPrice: JSON.stringify(coinsWithPrice),
-    // });
-
-    // const buyTotal =
-    //   totalBuyAndSell?.filter((total) => total?._id === 'BUY')?.[0]?.sum ?? 0;
-    // const sellTotal =
-    //   totalBuyAndSell?.filter((total) => total?._id === 'SELL')?.[0]?.sum ?? 0;
-    // const totalPnl = sellTotal - buyTotal;
-
     return {
-      coinsWithPrice,
-      // test: '12',
-      // totalPnl,
-      // totalBuyAndSell,
+      totalPnl,
+      totalRealizedPnl,
+      totalUnrealizedPnl,
+      totalUnrealizedQuantity,
+      mostHoldings,
     };
   }
 }
