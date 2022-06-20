@@ -77,6 +77,7 @@ export class UserPnlService {
     let totalUnrealizedQuantity = 0;
     const mostHoldings = {
       symbol: '',
+      coin: '',
       quantity: 0,
     };
 
@@ -90,10 +91,12 @@ export class UserPnlService {
         totalUnrealizedQuantity += coin?.unrealizedQuantity;
         if (coin?.unrealizedQuantity > mostHoldings?.quantity) {
           mostHoldings.quantity = coin?.unrealizedQuantity;
-          mostHoldings.symbol = coin?.id;
+          mostHoldings.coin = coin?.id;
+          mostHoldings.symbol = existingCoin?.symbol;
         }
         return {
           ...coin,
+          symbol: existingCoin?.symbol,
           unrealizedPnl,
         };
       }),
