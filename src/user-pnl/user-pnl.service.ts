@@ -34,7 +34,7 @@ export class UserPnlService {
             unrealizedPnl = 0; // no more unrealized pnl
           }
 
-          if (realizedPnl < 0) {
+          if (realizedPnl < 0 && unrealizedQuantity > 0) {
             realizedPnl = 0; // no realized pnl as of now
           }
         }
