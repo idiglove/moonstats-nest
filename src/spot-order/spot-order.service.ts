@@ -71,6 +71,37 @@ export class SpotOrderService {
     }
   }
 
+  async getGroupedByDate(userId: string): Promise<any> {
+    const spotOrders = await this.model
+      .aggregate([
+        {
+          $match: {
+            userId,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              day: {
+                $dayOfMonth: '$createdAt',
+              },
+              month: {
+                $month: '$createdAt',
+              },
+              year: {
+                $year: '$createdAt',
+              },
+            },
+            items: {
+              $push: '$$ROOT',
+            },
+          },
+        },
+      ])
+      .exec();
+    return spotOrders;
+  }
+
   async update(
     id: string,
     updateLevelDto: UpdateSpotOrderDto,

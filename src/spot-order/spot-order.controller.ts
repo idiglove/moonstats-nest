@@ -25,6 +25,11 @@ export class SpotOrderController {
     return await this.spotOrderService.findOne(id);
   }
 
+  @Get('date-grouped/user/:userId')
+  async getGroupedByDate(@Param('userId') userId: string) {
+    return await this.spotOrderService.getGroupedByDate(userId);
+  }
+
   @Get('user/:userId')
   async findByUserId(@Param('userId') userId: string) {
     return await this.spotOrderService.findAllByUser(userId);
