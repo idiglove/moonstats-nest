@@ -56,4 +56,10 @@ export class UserController {
   async delete(@Param('id') id: string) {
     return await this.userService.delete(id);
   }
+
+  //createFromSeed
+  @Get('/seed')
+  async createFromSeed() {
+    return await this.userService.createFromSeed();
+  }
 }

@@ -7,7 +7,8 @@ import { CreateSpotOrderDto } from './dto/create-spot-order.dto';
 import { UpdateSpotOrderDto } from './dto/update-spot-order.dto';
 import { CoinGeckoService } from './../coin-gecko/coin-gecko.service';
 import { SpotOrder, SpotOrderDocument } from './schema/spot-order.schema';
-import { MarketPrice } from 'src/types';
+import { IResponse, MarketPrice } from 'src/types';
+import { createSpotOrdersForTestUser } from './seed/create-for-test-user.seed';
 
 @Injectable()
 export class SpotOrderService {
@@ -97,6 +98,11 @@ export class SpotOrderService {
             },
           },
         },
+        {
+          $sort: {
+            _id: 1,
+          },
+        },
       ])
       .exec();
     return spotOrders;
@@ -111,5 +117,22 @@ export class SpotOrderService {
 
   async delete(id: string): Promise<SpotOrder> {
     return await this.model.findByIdAndDelete(id).exec();
+  }
+
+  async createSpotOrdersForTestUser(
+    userId: string,
+  ): Promise<IResponse | BadRequestException> {
+    try {
+      await this.model.insertMany(createSpotOrdersForTestUser(userId));
+      return {
+        success: true,
+        message: 'Succesfully seeded Spot Orders',
+      };
+    } catch (e: any) {
+      throw new BadRequestException({
+        success: false,
+        message: `There's an error - ${e?.message ?? ''}`,
+      });
+    }
   }
 }

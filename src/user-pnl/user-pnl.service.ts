@@ -84,8 +84,8 @@ export class UserPnlService {
     const totalPnl = await Promise.all(
       coinPnl?.map(async (coin: PnlItem) => {
         const existingCoin = await this.coinGeckoService.findById(coin?.id);
-        const unrealizedPnl =
-          coin.unrealizedQuantity * existingCoin?.marketPrice;
+        const marketPrice = existingCoin?.marketPrice ?? 0;
+        const unrealizedPnl = coin.unrealizedQuantity * marketPrice;
         totalRealizedPnl += coin?.realizedPnl;
         totalUnrealizedPnl += unrealizedPnl;
         totalUnrealizedQuantity += coin?.unrealizedQuantity;

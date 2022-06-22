@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './schema/user.schema';
+import { createTestUser } from './seed/create-test-user.seed';
 
 @Injectable()
 export class UserService {
@@ -54,5 +55,20 @@ export class UserService {
 
   async delete(id: string): Promise<User> {
     return await this.model.findByIdAndDelete(id).exec();
+  }
+
+  async createFromSeed(): Promise<User | BadRequestException> {
+    try {
+      const user = await new this.model({
+        ...createTestUser(),
+      }).save();
+
+      return user;
+    } catch (e: any) {
+      throw new BadRequestException({
+        success: false,
+        message: `User seed creation error - ${e?.message ?? ''}`,
+      });
+    }
   }
 }

@@ -4,7 +4,6 @@ import { Model } from 'mongoose';
 import fetch from 'cross-fetch';
 
 import { IResponse } from './../types.d';
-import { CreateCoinDto } from './dto/create-coin.dto';
 import { UpdateCoinDto } from './dto/update-coin.dto';
 import { Coin, CoinDocument } from './schema/coin.schema';
 

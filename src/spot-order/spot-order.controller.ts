@@ -52,4 +52,9 @@ export class SpotOrderController {
   async delete(@Param('id') id: string) {
     return await this.spotOrderService.delete(id);
   }
+
+  @Get('seed/user/:userId')
+  async createSeedsByUser(@Param('userId') userId: string) {
+    return await this.spotOrderService.createSpotOrdersForTestUser(userId);
+  }
 }
