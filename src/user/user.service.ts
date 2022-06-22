@@ -59,8 +59,9 @@ export class UserService {
 
   async createFromSeed(): Promise<User | BadRequestException> {
     try {
+      const testUser = await createTestUser();
       const user = await new this.model({
-        ...createTestUser(),
+        ...testUser,
       }).save();
 
       return user;

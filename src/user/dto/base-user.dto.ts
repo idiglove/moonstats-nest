@@ -2,6 +2,7 @@ export class BaseUserDto {
   firstName: string;
   lastName?: string;
   email: string;
+  password: string;
   pnl?: PNL;
 }
 
