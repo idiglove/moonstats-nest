@@ -1,11 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserDocument } from './schema/user.schema';
 import { createTestUser } from './seed/create-test-user.seed';
+import { IResponse } from 'src/types';
 
 @Injectable()
 export class UserService {
@@ -69,6 +71,48 @@ export class UserService {
       throw new BadRequestException({
         success: false,
         message: `User seed creation error - ${e?.message ?? ''}`,
+      });
+    }
+  }
+
+  async login(
+    email: string,
+    password: string,
+  ): Promise<IResponse | BadRequestException> {
+    try {
+      const user = await this.model.find({ email }).exec();
+
+      if (!user.length) {
+        throw new BadRequestException({
+          success: false,
+          message: `Email do not exist`,
+        });
+      }
+
+      const userObj = user?.[0];
+
+      const isMatch = await bcrypt.compare(password, userObj?.password);
+      if (isMatch) {
+        return {
+          success: true,
+          message: `Login success`,
+          data: {
+            id: userObj?.id,
+            firstName: userObj?.firstName,
+            lastName: userObj?.lastName,
+            email: userObj?.email,
+          },
+        };
+      }
+
+      throw new BadRequestException({
+        success: false,
+        message: `Email and password do not match`,
+      });
+    } catch (e: any) {
+      throw new BadRequestException({
+        success: false,
+        message: `Login error - ${e.message ?? ''}`,
       });
     }
   }
