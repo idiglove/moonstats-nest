@@ -9,6 +9,8 @@ import { User, UserDocument } from './schema/user.schema';
 import { createTestUser } from './seed/create-test-user.seed';
 import { IResponse } from 'src/types';
 
+const saltOrRounds = 10;
+
 @Injectable()
 export class UserService {
   constructor(
@@ -35,14 +37,25 @@ export class UserService {
 
   async create(
     createUserDto: CreateUserDto,
-  ): Promise<User | BadRequestException> {
+  ): Promise<IResponse | BadRequestException> {
     try {
+      const hash = await bcrypt.hash(createUserDto.password, saltOrRounds);
+
       const user = await new this.model({
         ...createUserDto,
+        password: hash,
         createdAt: new Date(),
       }).save();
 
-      return user;
+      return {
+        success: true,
+        message: 'Signup success',
+        data: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+        },
+      };
     } catch (e: any) {
       throw new BadRequestException({
         success: false,
