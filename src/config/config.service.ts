@@ -30,14 +30,7 @@ export class ConfigService {
     return {
       uri:
         this.get('NODE_ENV') === 'production'
-          ? 'mongodb+srv://' +
-            this.get('MONGO_USER') +
-            ':' +
-            this.get('MONGO_PASSWORD') +
-            '@' +
-            this.get('MONGO_HOST') +
-            '/' +
-            this.get('MONGO_DATABASE')
+          ? this.get('MONGO_CONNECTION_STRING')
           : this.getDevMongoUri(),
       useNewUrlParser: true,
       useUnifiedTopology: true,
