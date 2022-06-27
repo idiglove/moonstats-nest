@@ -35,19 +35,6 @@ export class CoinGeckoController {
     return await this.coinGeckoService.getAndSaveList();
   }
 
-  // @Get('pnl/id/:userId') // pnl/id/628a1d220d6613d63b8b024f
-  // async getPnl(@Param('userId') userId: string) {
-  //   return await this.coinGeckoService.computeTotalPnl(userId);
-  // }
-
-  // @Get('user/:userId/path/:path')
-  // async findByUserIdAndPath(
-  //   @Param('userId') userId: string,
-  //   @Param('path') path: string,
-  // ) {
-  //   return await this.coinGeckoService.findAllByUser(userId, path);
-  // }
-
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateCoinDto) {
     return await this.coinGeckoService.update(id, updateUserDto);

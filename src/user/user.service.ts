@@ -22,15 +22,6 @@ export class UserService {
     return await this.model.find().exec();
   }
 
-  // async findAllByUser(userId: string, path: string): Promise<any> {
-  //   const levels = await this.model
-  //     .find({ levelUserId: userId, levelPath: path })
-  //     .exec();
-  //   return {
-  //     levels: levels, // needed for Unity JSON serialization
-  //   };
-  // }
-
   async findOne(id: string): Promise<User> {
     return await this.model.findById(id).exec();
   }

@@ -34,14 +34,6 @@ export class UserController {
     return await this.userPnlService.computeTotalPnl(userId);
   }
 
-  // @Get('user/:userId/path/:path')
-  // async findByUserIdAndPath(
-  //   @Param('userId') userId: string,
-  //   @Param('path') path: string,
-  // ) {
-  //   return await this.userService.findAllByUser(userId, path);
-  // }
-
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
