@@ -1,11 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import {
-  SpotOrder,
-  SpotOrderSchema,
-  SpotOrderDocument,
-} from './../spot-order/schema/spot-order.schema';
+import { SpotOrder } from './../spot-order/schema/spot-order.schema';
 import { UserPnlService } from './user-pnl.service';
 import {
   ordersRealizedMock,

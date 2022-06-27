@@ -8,7 +8,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { CoinGeckoService } from './coin-gecko.service';
-import { CreateCoinDto } from './dto/create-coin.dto';
 import { UpdateCoinDto } from './dto/update-coin.dto';
 
 @Controller('coin-gecko')

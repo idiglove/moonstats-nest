@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { resolve } from 'path';
 import { CoinGeckoService } from 'src/coin-gecko/coin-gecko.service';
 import { PnlItem } from 'src/types';
 import {
@@ -84,7 +83,7 @@ export class UserPnlService {
     const totalPnl = await Promise.all(
       coinPnl?.map(async (coin: PnlItem) => {
         const existingCoin = await this.coinGeckoService.findById(coin?.id);
-        const marketPrice = existingCoin?.marketPrice ?? 0;
+        const marketPrice = existingCoin?.marketPrice ?? 0; // multiply to saved market price
         const unrealizedPnl = coin.unrealizedQuantity * marketPrice;
         totalRealizedPnl += coin?.realizedPnl;
         totalUnrealizedPnl += unrealizedPnl;
